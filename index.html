@@ -293,6 +293,37 @@
       cursor: pointer; font-family: 'EB Garamond', serif; letter-spacing: 0.04em;
     }
 
+    /* ── TOOLTIPS ──────────────────────────────────────────────────────── */
+    [data-tooltip] { position: relative; }
+    [data-tooltip]::after {
+      content: attr(data-tooltip);
+      position: absolute; bottom: calc(100% + 8px); left: 50%;
+      transform: translateX(-50%);
+      background: var(--navy-dk); color: var(--white);
+      font-family: 'EB Garamond', serif; font-size: 12px; font-style: normal;
+      letter-spacing: 0.05em; white-space: nowrap;
+      padding: 5px 10px; border-radius: 6px;
+      border: 1px solid var(--gold);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+      pointer-events: none; opacity: 0;
+      transition: opacity 0.18s ease;
+      z-index: 600;
+    }
+    [data-tooltip]::before {
+      content: '';
+      position: absolute; bottom: calc(100% + 3px); left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: var(--gold);
+      pointer-events: none; opacity: 0;
+      transition: opacity 0.18s ease;
+      z-index: 600;
+    }
+    @media (hover: hover) {
+      [data-tooltip]:hover::after,
+      [data-tooltip]:hover::before { opacity: 1; }
+    }
+
     /* ── TOAST ─────────────────────────────────────────────────────────── */
     #toast {
       position: fixed; top: calc(var(--hdr) + 12px); left: 16px; right: 16px;
@@ -397,11 +428,11 @@
 
 <!-- ── HEADER ─────────────────────────────────────────────────────────────── -->
 <header id="app-header">
-  <button id="menu-btn" aria-label="Open stop list">☰</button>
+  <button id="menu-btn" aria-label="Open stop list" data-tooltip="Stop list" title="Open stop list">☰</button>
   <div class="hdr-center">
     <img class="hdr-logo" src="In_Her_Shoes_logo_transparent.png" alt="In Her Shoes logo">
   </div>
-  <div class="progress-ring-wrap" title="Stops visited">
+  <div class="progress-ring-wrap" title="Stops visited" data-tooltip="Stops visited" role="img" aria-label="Stops visited">
     <svg width="40" height="40" viewBox="0 0 40 40">
       <circle class="pr-track" cx="20" cy="20" r="16"/>
       <circle class="pr-fill" id="pr-arc" cx="20" cy="20" r="16"/>
@@ -872,9 +903,13 @@ document.getElementById("menu-btn").addEventListener("click", function() {
   if (currentTab === "stops") {
     switchTab("map");
     this.setAttribute("aria-label", "Open stop list");
+    this.setAttribute("data-tooltip", "Stop list");
+    this.setAttribute("title", "Open stop list");
   } else {
     switchTab("stops");
     this.setAttribute("aria-label", "Close stop list");
+    this.setAttribute("data-tooltip", "Close stop list");
+    this.setAttribute("title", "Close stop list");
   }
 });
 document.querySelectorAll(".nav-tab").forEach(function(b) {
